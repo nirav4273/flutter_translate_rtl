@@ -25,7 +25,6 @@ class MainApp extends StatelessWidget{
     Locale locale = provider.getLanguage;
     final isRTL = provider.getRTL;
 
-    print(locale);
     // TODO: implement build
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -53,38 +52,57 @@ class Home extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     ConfigProvider provider = Provider.of(context, listen: false);
+
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(title: Text("Hello".i18n)),
+      appBar: AppBar(
+          title: Text("Hello".i18n),
+        centerTitle: false,
+      ),
       drawer: Drawer(
         child: Column(
           children: [
-            CheckboxListTile(
-              value: !provider.getRTL,
+            RadioListTile(
+              groupValue: 0,
+              value: 'english',
+              selected: !provider.getRTL,
               title: Text("English"),
+              onChanged: (val) {
+                provider.setLanguage(Locale('en', 'EN'));
+                provider.setRTL(false);
+                I18n.of(context).locale = Locale("en", 'US');
+              },
             ),
-            CheckboxListTile(
-              value: provider.getRTL,
+            RadioListTile(
+              selected: provider.getRTL,
+              groupValue: 0,
+              value: 'arabic',
               title: Text("Arabic"),
+              onChanged: (val){
+                provider.setLanguage(Locale('ar', 'AR'));
+                I18n.of(context).locale = Locale("ar", 'AR');
+                provider.setRTL(true);
+              },
             )
           ],
         ),
       ),
       body: Container(
         width: double.infinity,
-        child: Text("HEllo"),
+        child: Center(
+          child: Column(
+            children: [
+              Text("Hello, how are you?".i18n),
+              Text("Hi".i18n)
+            ],
+          ),
+        )
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.language),
         onPressed: (){
           print(I18n.of(context).locale);
-          if(I18n.of(context).locale.countryCode == 'AR') {
-            I18n.of(context).locale = Locale("en", 'US');
-            provider.setRTL(false);
-          } else {
-            provider.setRTL(true);
-            I18n.of(context).locale = Locale("ar", 'AR');
-          }
+
         },
       ),
     );
